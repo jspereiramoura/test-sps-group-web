@@ -1,21 +1,34 @@
 import axios from "axios";
 
 class UserService {
+  axiosInstance;
+
+  constructor() {
+    this.axiosInstance = axios.create({
+      baseURL: `${process.env.REACT_APP_SERVER_URL}/users`,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        "Content-Type": "application/json",
+      },
+    });
+  }
+
   async list() {
-    const users = await axios.get(`${process.env.REACT_APP_SERVER_URL}/users`);
+    const { data: users } = await this.axiosInstance.get("/");
     return users;
   }
   async get(id) {
-    throw new Error("Not implemented");
+    const { data: user } = await this.axiosInstance.get(`/${id}`);
+    return user;
   }
   async create(data) {
-    throw new Error("Not implemented");
+    await this.axiosInstance.post("/", data);
   }
   async delete(id) {
-    throw new Error("Not implemented");
+    await this.axiosInstance.delete(`/${id}`);
   }
   async update(id, data) {
-    throw new Error("Not implemented");
+    await this.axiosInstance.put(`/${id}`, data);
   }
 }
 
